@@ -20,10 +20,42 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup
 
 import json
+import pymysql
 
 #user defined
 from ssroom import *
 import logging
+
+db = None
+cursor = None
+
+def ss_db_init():
+  global db
+  db = pymysql.connect(host='127.0.0.1', unix_socket='/tmp/mysql.sock',
+                             user='root', passwd='Qwertyui123456', db='mysql')
+  global cursor
+  cursor = db.cursor()
+  cursor.execute("SET sql_notes = 0; ")
+  cursor.execute("create database IF NOT EXISTS ctrip")
+  cursor.execute("USE ctrip")
+
+  cursor.execute("SET sql_notes = 0; ")
+  cursor.execute("create table IF NOT EXISTS lowest_price_eachday (id DATE, search_date DATE, price INT, primary key(id, search_date));")
+  cursor.execute("SET sql_notes = 1; ")
+
+def ss_db_add_new_item(start, end, price):
+  data = "insert into lowest_price_eachday (id, search_date, price) values('"
+  data += str(start)
+  data += "', '"
+  data += str(end)
+  data += "', %d)" % price
+  #print(data)
+  cursor.execute(data)
+  db.commit()
+
+def ss_db_deinit():
+  cursor.close()
+  db.close()
 
 def ss_show_error(msg):
   print(msg)
@@ -148,14 +180,12 @@ def ss_get_price_for_date(driver, from_date, to_date):
   #如果存在, 则等待dom刷新
   if flag_row:
     try:
-      print('wait for current row change')
-      WebDriverWait(driver, 10).until(staleness_of(flag_row))
+      WebDriverWait(driver, 20).until(staleness_of(flag_row))
     except:
       print(flag_row.get_attribute('outerHTML'))
       ss_show_error('timeout to refresh table')
 
-  print('wait for new table')
-  WebDriverWait(driver, 10).until(
+  WebDriverWait(driver, 20).until(
     EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
   )
   
@@ -211,6 +241,7 @@ def ss_get_price_for_date(driver, from_date, to_date):
   return lowest_price
 
 def ss_retrieve_all_price_for_hotel(hotelurl):
+  ss_db_init()
   dcap = dict(DesiredCapabilities.PHANTOMJS)
   dcap["phantomjs.page.settings.userAgent"] = (
      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
@@ -221,7 +252,7 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
   driver.get(hotelurl)
   try:
     table = EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
-    WebDriverWait(driver, 10).until(table)
+    WebDriverWait(driver, 20).until(table)
   except:
     if os.path.isfile('./test.png'):
       os.remove('./test.png')
@@ -229,18 +260,27 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
     ss_show_error('timeout to wait table')
     driver.quit()
 
-  for i in range(0, 5): #当前开始100天
+  #当前到年底
+  current_date = datetime.date.today()
+  day_end = datetime.date(current_date.year, 12, 31)
+  count = (day_end - current_date).days
+  for i in range(0, count):
     start = datetime.date.today() + datetime.timedelta(days=i)
     end = start + datetime.timedelta(days=1)
     #print("start: "+start.strftime('%Y-%m-%d')+" end: "+end.strftime('%Y-%m-%d'))
     #tomorrow_string = tomorrow.strftime('%Y-%m-%d')
-    ss_get_price_for_date(driver, start, end)
+    price = ss_get_price_for_date(driver, start, end)
+    ss_db_add_new_item(start, current_date, price)
   driver.quit()
+  ss_db_deinit()
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 if os.path.isfile('./logger.log'):
   os.remove('./logger.log')
 logging.basicConfig(filename='logger.log', level=logging.INFO)
 
+print("start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
 url = ss_get_url_for_hotel('上海大厦')
 ss_retrieve_all_price_for_hotel(url)
+print("end: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
+
