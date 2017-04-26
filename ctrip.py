@@ -31,8 +31,7 @@ cursor = None
 
 def ss_db_init():
   global db
-  db = pymysql.connect(host='127.0.0.1', unix_socket='/tmp/mysql.sock',
-                             user='root', passwd='Qwertyui123456', db='mysql')
+  db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456')
   global cursor
   cursor = db.cursor()
   cursor.execute("SET sql_notes = 0; ")
