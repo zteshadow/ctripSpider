@@ -247,12 +247,19 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
   )
   dcap["phantomjs.page.settings.loadImages"] = False
-  driver = webdriver.PhantomJS(executable_path="/usr/local/bin/phantomjs", desired_capabilities=dcap)
+  phantomjs_path = os.environ.get('PHANTOMJSPATH')
+  if phantomjs_path:
+    pass
+  else:
+    print("phantomjs needed, set environment for 'PHANTOMJSPATH'")
+    exit(1)
+
+  driver = webdriver.PhantomJS(executable_path=phantomjs_path, desired_capabilities=dcap)
   print(hotelurl)
   driver.get(hotelurl)
   try:
     table = EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
-    WebDriverWait(driver, 20).until(table)
+    WebDriverWait(driver, 30).until(table)
   except:
     if os.path.isfile('./test.png'):
       os.remove('./test.png')
