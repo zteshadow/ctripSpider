@@ -4,6 +4,7 @@
 from flask import Flask, render_template
 import chartkick
 import pymysql
+import datetime
 
 def get_all_data():
   all_data = {}
@@ -15,7 +16,8 @@ def get_all_data():
   cursor.execute("SET sql_notes = 0; ")
   cursor.execute("SET sql_notes = 1; ")
 
-  command = "select id, price from lowest_price_eachday where search_date = '2017-04-27' order by id limit 0, 45;"
+  today = datetime.date.today()
+  command = "select id, price from lowest_price_eachday where search_date = '" + today.strftime('%Y-%m-%d') + "' order by id limit 0, 60;"
   cursor.execute(command)
   all_items = cursor.fetchall()
   for item in all_items:
