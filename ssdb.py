@@ -73,11 +73,20 @@ class ssdb:
       self.db.commit()
 
   def city_list_exist(self):
-      command = "select * from city_list;"
-      self.cursor.execute(command)
-      city_list = self.cursor.fetchall()
-      if len(city_list) > 0:
-        return True
-      else:
-        return False;
+    command = "select * from city_list;"
+    self.cursor.execute(command)
+    city_list = self.cursor.fetchall()
+    if len(city_list) > 0:
+      return True
+    else:
+      return False;
   
+  def add_hotel_data(self, start, end, price):
+    data = "insert into find_hotel (id, search_date, price) values('"
+    data += str(start)
+    data += "', '"
+    data += str(end)
+    data += "', %d)" % price
+    #print(data)
+    self.cursor.execute(data)
+    self.db.commit()

@@ -21,40 +21,8 @@ from bs4 import BeautifulSoup
 
 import json
 import pymysql
-
-#user defined
-from ssroom import *
 import logging
-
-db = None
-cursor = None
-
-def ss_db_init():
-  global db
-  db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456')
-  global cursor
-  cursor = db.cursor()
-  cursor.execute("SET sql_notes = 0; ")
-  cursor.execute("create database IF NOT EXISTS ctrip")
-  cursor.execute("USE ctrip")
-
-  cursor.execute("SET sql_notes = 0; ")
-  cursor.execute("create table IF NOT EXISTS lowest_price_eachday (id DATE, search_date DATE, price INT, primary key(id, search_date));")
-  cursor.execute("SET sql_notes = 1; ")
-
-def ss_db_add_new_item(start, end, price):
-  data = "insert into lowest_price_eachday (id, search_date, price) values('"
-  data += str(start)
-  data += "', '"
-  data += str(end)
-  data += "', %d)" % price
-  #print(data)
-  cursor.execute(data)
-  db.commit()
-
-def ss_db_deinit():
-  cursor.close()
-  db.close()
+from ssdata import ssdata
 
 def ss_show_error(msg):
   print(msg)
@@ -240,7 +208,7 @@ def ss_get_price_for_date(driver, from_date, to_date):
   return lowest_price
 
 def ss_retrieve_all_price_for_hotel(hotelurl):
-  ss_db_init()
+  db = ssdata()
   dcap = dict(DesiredCapabilities.PHANTOMJS)
   dcap["phantomjs.page.settings.userAgent"] = (
      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
@@ -276,9 +244,8 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
     #print("start: "+start.strftime('%Y-%m-%d')+" end: "+end.strftime('%Y-%m-%d'))
     #tomorrow_string = tomorrow.strftime('%Y-%m-%d')
     price = ss_get_price_for_date(driver, start, end)
-    ss_db_add_new_item(start, current_date, price)
+    db.add_hotel_data(start, current_date, price)
   driver.quit()
-  ss_db_deinit()
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 if os.path.isfile('./logger.log'):

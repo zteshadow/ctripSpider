@@ -64,4 +64,7 @@ class ssdata:
       city_list = self.get_city_list()
       self.db.add_city_list(city_list)
       return city_list[name]
+  
+  def add_hotel_data(self, start, end, price):
+    self.db.add_hotel_data(start, end, price)
 
