@@ -23,6 +23,7 @@ import json
 import pymysql
 import logging
 from ssdata import ssdata
+from ssdriver import ssdriver
 
 def ss_show_error(msg):
   print(msg)
@@ -209,19 +210,8 @@ def ss_get_price_for_date(driver, from_date, to_date):
 
 def ss_retrieve_all_price_for_hotel(hotelurl):
   db = ssdata()
-  dcap = dict(DesiredCapabilities.PHANTOMJS)
-  dcap["phantomjs.page.settings.userAgent"] = (
-     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
-  )
-  dcap["phantomjs.page.settings.loadImages"] = False
-  phantomjs_path = os.environ.get('PHANTOMJSPATH')
-  if phantomjs_path:
-    pass
-  else:
-    print("phantomjs needed, set environment for 'PHANTOMJSPATH'")
-    exit(1)
-
-  driver = webdriver.PhantomJS(executable_path=phantomjs_path, desired_capabilities=dcap)
+  mydriver = ssdriver()
+  driver = mydriver.webdriver()
   print(hotelurl)
   driver.get(hotelurl)
   try:
@@ -232,7 +222,6 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
       os.remove('./test.png')
     driver.save_screenshot("test.png")
     ss_show_error('timeout to wait table')
-    driver.quit()
 
   #当前到年底
   current_date = datetime.date.today()
@@ -245,7 +234,6 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
     #tomorrow_string = tomorrow.strftime('%Y-%m-%d')
     price = ss_get_price_for_date(driver, start, end)
     db.add_hotel_data(start, current_date, price)
-  driver.quit()
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 if os.path.isfile('./logger.log'):

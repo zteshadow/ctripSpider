@@ -88,5 +88,9 @@ class ssdb:
     data += str(end)
     data += "', %d)" % price
     #print(data)
-    self.cursor.execute(data)
-    self.db.commit()
+    try:
+      self.cursor.execute(data)
+      self.db.commit()
+    except:
+      print(data + "--> command error")
+
