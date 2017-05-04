@@ -11,7 +11,7 @@ class ssdb:
     self.cursor = None
     self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456', charset='utf8')
     if self.db:
-      cursor = self.db.cursor()
+      cursor = self.db.cursor(pymysql.cursors.DictCursor)
       if cursor:
         self.cursor = cursor
 
@@ -54,7 +54,8 @@ class ssdb:
     if len(name) > 0:
       command = "select code from city_list where name = '" + name + "';"
       self.cursor.execute(command)
-      code = self.cursor.fetchone()
+      item = self.cursor.fetchone()
+      code = item['code']
 
     return code
 
