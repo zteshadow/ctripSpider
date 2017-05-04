@@ -37,7 +37,8 @@ class ssdata:
     except:
       return name
 
-  def create_city_list(self):
+  def get_city_list(self):
+    city_list = {}
     today = datetime.date.today().strftime('%Y_%m_%d_%H_%M_%S')
     url = "http://webresource.c-ctrip.com/code/cquery/resource/address/flight/flight_new_poi_gb2312.js?releaseno=?CR_" + today
     response = urlopen(url).read().decode('gb2312')
@@ -50,11 +51,16 @@ class ssdata:
       if len(item_list) >= 4:
         name = self.remove_code(item_list[1])
         code = item_list[3]
-        print(name + ":" + code)
+        if len(name) > 0 and len(code) > 0:
+          city_list[name] = code
+
+    return city_list
 
   def find_city(self, name):
     if self.db.city_list_exist():
       code = self.db.find_city(name)
     else:
-      self.create_city_list()
+      city_list = self.get_city_list()
+      self.db.add_city_list(city_list)
+      return city_list[name]
 

@@ -9,7 +9,7 @@ class ssdb:
 
   def __init__(self):
     self.cursor = None
-    self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456')
+    self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456', charset='utf8')
     if self.db:
       cursor = self.db.cursor()
       if cursor:
@@ -22,18 +22,18 @@ class ssdb:
 
         #'hotel table'
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS find_hotel (id DATE, search_date DATE, price INT, primary key(id, search_date));")
+        cursor.execute("create table IF NOT EXISTS find_hotel (id DATE, search_date DATE, price INT, primary key(id, search_date)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")
 
         #'find_flights table'
         cursor.execute("SET sql_notes = 0; ")
-        command = "create table IF NOT EXISTS find_flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, search_date DATE, price INT, primary key(from_city, to_city, day));"
+        command = "create table IF NOT EXISTS find_flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, search_date DATE, price INT, primary key(from_city, to_city, day)) charset = utf8;"
         cursor.execute(command)
         cursor.execute("SET sql_notes = 1; ")
 
         #'city code table'
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS city_list (name VARCHAR(20), code VARCHAR(20), primary key(name));")
+        cursor.execute("create table IF NOT EXISTS city_list (name VARCHAR(20), code VARCHAR(20), primary key(name)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")        
 
       else:
@@ -52,19 +52,21 @@ class ssdb:
   def find_city(self, name):
     code = None
     if len(name) > 0:
-      command = "select code from city_list where name = '" + name
+      command = "select code from city_list where name = '" + name + "';"
       self.cursor.execute(command)
       code = self.cursor.fetchone()
 
     return code
 
-  def add_city(self, name, code):
-    if len(name) > 0 and len(code) > 0:
+  #{name, code}
+  def add_city_list(self, map):
+    for name in map:
+      code = map[name]
       data = "insert into city_list (name, code) values('"
       data += name
       data += "', '"
       data += code
-      data += ");"
+      data += "');"
       #print(data)
       self.cursor.execute(data)
       self.db.commit()
