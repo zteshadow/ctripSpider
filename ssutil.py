@@ -8,6 +8,12 @@ class ssutil:
   def __init__(self):
     pass
 
+  #quit without exception
+  @staticmethod
+  def quit():
+    os._exit(1)
+
+  #exception will rail
   @staticmethod
   def error(msg):
     #print(msg)
@@ -19,3 +25,21 @@ class ssutil:
     if os.path.isfile('./web.png'):
       os.remove('./web.png')
     driver.save_screenshot("web.png")
+
+  #￥113 -> 113
+  @staticmethod
+  def price(price):
+    pricenumber = 0
+    price = price.strip()
+    while price.isalnum() == False and len(price) >= 2:
+      price = price[1:]
+
+    if price.isalnum():
+      try:
+        pricenumber = int(price)
+      except:
+        print('--error price: ' + price)
+
+    return pricenumber
+
+

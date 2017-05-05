@@ -14,21 +14,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-#
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.parse import quote
 from bs4 import BeautifulSoup
 
-import json
-import pymysql
-import logging
+import json, pymysql, logging
 from ssdata import ssdata
 from ssdriver import ssdriver
-
-def ss_show_error(msg):
-  print(msg)
-  exit(1)
+from ssutil import ssutil
 
 def ss_get_content(url):
   try:
@@ -62,14 +56,10 @@ def ss_get_url_for_hotel(keyword):
   #keyword = '上海大厦';
   #keyword = urllib.parse.quote(keyword)
   keyword = quote(keyword)
-  url = "http://m.ctrip.com/restapi/h5api/searchapp/search?action=autocomplete&source=globalonline&keyword=%s"%keyword
-  #print(url)
-  #print("http://m.ctrip.com/restapi/h5api/searchapp/search?action=autocomplete&source=globalonline&keyword=%s"%keyword)
-
+  url = "http://m.ctrip.com/restapi/h5api/searchapp/search?action=autocomplete&source=globalonline&keyword=%s" % keyword
   content = ss_get_content(url)
   if content == None:
-    print("content not found")
-    exit(0)
+    ssutil.error('content not found')
 
   jsonData = json.loads(content.decode("utf-8"))
   #print(s)
@@ -78,34 +68,22 @@ def ss_get_url_for_hotel(keyword):
     hotelList = jsonData['data']
     #print(jsonData['data'])
   except:
-    ss_show_error("--------json struction is changed-----")
+    ssutil.error("--------json struction is changed-----")
 
   hotelURL = None;
   for hotel in hotelList:
     try:
       name = hotel['word']
       if (name == '上海大厦'):
-        print(hotel)
+        #print(hotel)
         try:
           hotelURL = hotel['url']
         except:
-          ss_show_error("--------json struction is changed-----")
+          ssutil.error("--------json struction is changed-----")
     except:
-      ss_show_error("--------json struction is changed-----")
+      ssutil.error("--------json struction is changed-----")
 
   return hotelURL
-
-def ss_get_element_text_by_class(element, class_name):
-  try:
-    item = element.find_element_by_class_name(class_name)
-    if item:
-      return item.text
-    else:
-      return None
-  except:
-    print("no class ".class_name)
-  finally:
-    return None
 
 def ss_get_flag_row(driver):
   table = driver.find_element_by_id('J_RoomListTbl')
@@ -114,7 +92,7 @@ def ss_get_flag_row(driver):
   if count > 2:
     return row_list[1] #取第二条作为table更新的标志行
   else:
-    ss_show_error("no flag row")
+    ssutil.error("no flag row")
 
 def ss_get_price_for_date(driver, from_date, to_date):
   lowest_price = sys.maxsize
@@ -131,20 +109,20 @@ def ss_get_price_for_date(driver, from_date, to_date):
     toBox.clear()
     toBox.send_keys(to_string)
   else:
-    ss_show_error('no to box')
+    ssutil.error('no to box')
 
   fromBox = driver.find_element_by_name('cc_txtCheckIn')
   if fromBox != None:
     fromBox.clear()
     fromBox.send_keys(from_string)
   else:
-    ss_show_error('no from box')
+    ssutil.error('no from box')
 
   search_button = driver.find_element_by_id('changeBtn')
   if search_button != None:
     search_button.click()
   else:
-    ss_show_error('no search button')
+    ssutil.error('no search button')
   
   #如果存在, 则等待dom刷新
   if flag_row:
@@ -152,9 +130,9 @@ def ss_get_price_for_date(driver, from_date, to_date):
       WebDriverWait(driver, 20).until(staleness_of(flag_row))
     except:
       print(flag_row.get_attribute('outerHTML'))
-      ss_show_error('timeout to refresh table')
+      ssutil.error('timeout to refresh table')
 
-  WebDriverWait(driver, 20).until(
+  WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
   )
   
@@ -164,7 +142,7 @@ def ss_get_price_for_date(driver, from_date, to_date):
   if count > 0:
     print("get row ok: %d" % count)
   else:
-    ss_show_error("no row")
+    ssutil.error("no row")
 
   for row in row_list:
     try:
@@ -191,20 +169,11 @@ def ss_get_price_for_date(driver, from_date, to_date):
     #条件是: 双床, 双早, 找最低价格
     if bed.find('双') != -1 and breakfirst.find('双') != -1:
       #print('bed: ' + bed + " breakfirst: " + breakfirst + " price: " + price)
-      price = price.strip()
-      while price.isalnum() == False and len(price) >= 2:
-        price = price[1:]
-
-    if price.isalnum():
-      try:
-        real_price = int(price)
-        if real_price > 0 and real_price < lowest_price:
-          lowest_price = real_price
-          lowest_bed = bed
-          lowest_breakfirst = breakfirst
-      except:
-        #print("invalide price: " + price)
-        pass
+      real_price = ssutil.price(price)
+      if real_price > 0 and real_price < lowest_price:
+        lowest_price = real_price
+        lowest_bed = bed
+        lowest_breakfirst = breakfirst
 
   print("from: " + str(from_date) + " to: " + str(to_date) + " bed: " + lowest_bed + " breakfirst: " + lowest_breakfirst + " lowest_price: %d" % lowest_price)
   return lowest_price
@@ -216,13 +185,11 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
   print(hotelurl)
   driver.get(hotelurl)
   try:
-    table = EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
-    WebDriverWait(driver, 30).until(table)
+    table = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "J_RoomListTbl")))
   except:
-    if os.path.isfile('./test.png'):
-      os.remove('./test.png')
-    driver.save_screenshot("test.png")
-    ss_show_error('timeout to wait table')
+    ssutil.save_web(driver)
+    ssutil.error('timeout to wait table')
 
   #当前到年底
   current_date = datetime.date.today()
