@@ -7,12 +7,13 @@ import time
 import datetime
 import sys
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.expected_conditions import staleness_of
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 #
 from urllib.request import urlopen
 from urllib.error import HTTPError

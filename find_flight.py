@@ -3,6 +3,10 @@
 # http://flights.ctrip.com/booking/SHA-YNJ-day-1.html?DDate1=2017-05-05
 
 import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from ssdata import ssdata
 from ssdriver import ssdriver
 from ssutil import ssutil
@@ -15,10 +19,10 @@ def get_price(driver, from_city, to_city, day):
   
   driver.get(url)
   try:
-    element = WebDriverWait(driver, 10).until(
+    element = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, "J_flightlist2")))
   except:
-    
+    #ssutil.save_web(driver)
     ssutil.error('timeout to wait table')
 
 if __name__ == '__main__':

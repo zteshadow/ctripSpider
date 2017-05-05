@@ -26,7 +26,8 @@ class ssdriver:
     self.driver = webdriver.PhantomJS(executable_path=phantomjs_path, desired_capabilities=dcap)
 
   def __del__(self):
-    self.driver.quit()
+    if self.driver:
+      self.driver.quit()
 
   def webdriver(self):
     return self.driver
