@@ -71,6 +71,3 @@ if __name__ == '__main__':
       time.sleep(3)
       price = get_price(from_city, to_city, day)
 
-
-
-

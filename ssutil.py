@@ -10,7 +10,8 @@ class ssutil:
 
   #quit without exception
   @staticmethod
-  def quit():
+  def quit(msg):
+    print(msg)
     os._exit(1)
 
   #exception will rail
