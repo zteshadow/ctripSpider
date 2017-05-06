@@ -15,6 +15,7 @@ from ssutil import ssutil
 class ssdriver:
   @staticmethod
   def get_cookies(url):
+    cookies = None
     domain_list = urlparse(url).hostname.split('.')
     name = None
     if len(domain_list) >= 3:
@@ -35,10 +36,13 @@ class ssdriver:
       else:
         with open(file_path, 'r') as f:
           cookies = json.load(f)
+    return cookies
 
   @staticmethod
   def add_cookies(driver, url):
-    pass
+    cookies = ssdriver.get_cookies(url)
+    for item in cookies:
+      driver.add_cookie(item)
 
   @staticmethod
   def get_phantomjs_path():

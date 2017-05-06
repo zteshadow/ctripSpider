@@ -33,6 +33,7 @@ def parse_data(table):
   return (airline, lowest_price)
 
 #'上海', '三亚', 2017-05-05
+# return: 765
 def get_price(from_city, to_city, day):
   driver_util = ssdriver()
   driver = driver_util.webdriver()
@@ -41,6 +42,7 @@ def get_price(from_city, to_city, day):
   print(url)
   
   driver.get(url)
+  ssdriver.add_cookies(driver, url)
   try:
     table = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, "J_flightlist2")))
@@ -52,6 +54,7 @@ def get_price(from_city, to_city, day):
     print("name: " + item[0] + " price: %d" % item[1])
     return item[1]
   else:
+    #ssutil.save_web(driver)
     return None
 
 if __name__ == '__main__':
@@ -63,11 +66,11 @@ if __name__ == '__main__':
   current_date = datetime.date.today()
   day_end = datetime.date(current_date.year, 12, 31)
   count = (day_end - current_date).days
-  for i in range(0, count):
+  for i in range(1, count): #从1开始, 是因为今天的机票一般都没有了
     day = datetime.date.today() + datetime.timedelta(days=i)
     price = get_price(from_city, to_city, day)
     while not price:
-      print('wait 3 secs...')
-      time.sleep(3)
+      print('wait 10 secs...')
+      time.sleep(10)
       price = get_price(from_city, to_city, day)
 
