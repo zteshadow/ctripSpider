@@ -68,7 +68,7 @@ if __name__ == '__main__':
   current_date = datetime.date.today()
   day_end = datetime.date(current_date.year, 12, 31)
   count = (day_end - current_date).days
-  for i in range(1, 2): #从1开始, 是因为今天的机票一般都没有了
+  for i in range(1, count): #从1开始, 是因为今天的机票一般都没有了
     day = datetime.date.today() + datetime.timedelta(days=i)
     if not bddata.find_flight(from_city_name, to_city_name, day, datetime.date.today()):
       price = get_price(from_city, to_city, day)

@@ -80,3 +80,5 @@ class ssdata:
   def find_flight(self, from_city, to_city, day, search_day):
     return self.db.find_flight(from_city, to_city, day, search_day)
 
+  def find_flight_all_price(self, from_city, to_city, search_day):
+    return self.db.find_flight_all_price(from_city, to_city, search_day)
