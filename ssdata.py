@@ -71,6 +71,9 @@ class ssdata:
   def find_hotel(self, name, day, search_day):
     return self.db.find_hotel(name, day, search_day)
 
+  def find_hotel_all_price(self, name, search_day):
+    return self.db.find_hotel_all_price(name, search_day)
+
   def add_flight(self, from_city, to_city, day, search_day, price):
     self.db.add_flight(from_city, to_city, day, search_day, price)
   

@@ -5,30 +5,11 @@ from flask import Flask, render_template
 import chartkick
 import pymysql
 import datetime
+from ssdata import ssdata
 
 def get_all_data():
-  all_data = {}
-  db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456')
-  cursor = db.cursor(pymysql.cursors.DictCursor)
-  cursor.execute("SET sql_notes = 0;")
-  cursor.execute("USE ctrip;")
-
-  cursor.execute("SET sql_notes = 0; ")
-  cursor.execute("SET sql_notes = 1; ")
-
-  today = datetime.date.today()
-  command = "select id, price from lowest_price_eachday where search_date = '" + today.strftime('%Y-%m-%d') + "' order by id limit 0, 60;"
-  cursor.execute(command)
-  all_items = cursor.fetchall()
-  for item in all_items:
-    all_data[str(item["id"])] = item["price"]
-    #item_string = "'" + str(item["id"]) + "':" + str(item["price"])
-    #print(item_string)
-    #print(item["id"])
-    #print(item["price"])
-    #all_data.append(item_string)
-
-  return all_data
+  data = ssdata()
+  return data.find_hotel_all_price('上海大厦', datetime.date.today())
 
 app = Flask(__name__, static_folder = chartkick.js())
 app.jinja_env.add_extension("chartkick.ext.charts")

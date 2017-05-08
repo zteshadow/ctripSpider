@@ -112,6 +112,21 @@ class ssdb:
       print(command + "--> command error")
       return 0
 
+  def find_hotel_all_price(self, name, search_day):
+    all_data = {}
+    command = "select name, day, price from find_hotel where search_date = '" + search_day.strftime('%Y-%m-%d') + "' order by day;"
+    self.cursor.execute(command)
+    all_items = self.cursor.fetchall()
+    for item in all_items:
+      all_data[str(item["day"])] = item["price"]
+      #item_string = "'" + str(item["id"]) + "':" + str(item["price"])
+      #print(item_string)
+      #print(item["id"])
+      #print(item["price"])
+      #all_data.append(item_string)
+
+    return all_data
+
   def add_flight(self, from_city, to_city, day, search_day, price):
     command = "insert into find_flight (from_city, to_city, day, search_date, price) values("
     command += "'" + from_city + "'"
