@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-import os, json
+import os, json, time
 from urllib.parse import urlparse
 
 from selenium import webdriver
@@ -25,12 +25,19 @@ class ssdriver:
 
     if name:
       file_path = "./data/" + name + '.cookies'
+      if os.path.isfile(file_path):
+        os.remove(file_path)
+
       if not os.path.isfile(file_path):
         chrome_path = ssdriver.get_chrome_driver_path()
         driver = webdriver.Chrome(chrome_path)
-        driver.get('http://hotels.ctrip.com/')
+        driver.get(url)
+
+        #10秒钟后
+        time.sleep(20)
+
         cookies = driver.get_cookies()
-        #print(cookies)
+        print(cookies)
         with open(file_path, 'w', encoding = 'utf-8') as f:
           json.dump(cookies, f)
       else:
@@ -42,6 +49,7 @@ class ssdriver:
   def add_cookies(driver, url):
     cookies = ssdriver.get_cookies(url)
     for item in cookies:
+      print(item)
       driver.add_cookie(item)
 
   @staticmethod
