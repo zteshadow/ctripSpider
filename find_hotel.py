@@ -201,7 +201,7 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
     #print("start: "+start.strftime('%Y-%m-%d')+" end: "+end.strftime('%Y-%m-%d'))
     #tomorrow_string = tomorrow.strftime('%Y-%m-%d')
     price = ss_get_price_for_date(driver, start, end)
-    db.add_hotel_data(start, current_date, price)
+    db.add_hotel(start, current_date, price)
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 if os.path.isfile('./logger.log'):

@@ -81,7 +81,7 @@ class ssdb:
     else:
       return False;
   
-  def add_hotel_data(self, start, end, price):
+  def add_hotel(self, start, end, price):
     data = "insert into find_hotel (id, search_date, price) values('"
     data += str(start)
     data += "', '"
@@ -93,4 +93,41 @@ class ssdb:
       self.db.commit()
     except:
       print(data + "--> command error")
+
+  def find_hotel(self):
+    pass
+
+  def add_flight(self, from_city, to_city, day, search_day, price):
+    command = "insert into find_flight (from_city, to_city, day, search_date, price) values("
+    command += "'" + from_city + "'"
+    command += ", '" + to_city + "'"
+    command += ", '" + str(day) + "'"
+    command += ", '" + str(search_day) + "'"
+    command += ", %d);" % price
+    #print(command)
+    try:
+      self.cursor.execute(command)
+      self.db.commit()
+    except:
+      print(command + "--> command error")
+
+  def find_flight(self, from_city, to_city, day, search_day):
+    command = "select price from find_flight where from_city = '"
+    command += from_city + "'"
+    command += " and to_city = '" + to_city + "'"
+    command += " and day = '" + str(day) + "'"
+    command += " and search_date = '" + str(search_day) + "'"
+    #print(command)
+    try:
+      self.cursor.execute(command)
+      item = self.cursor.fetchone()
+      if item:
+        return item['price']
+      else:
+        return 0
+
+    except:
+      print(command + "--> command error")
+      return 0
+
 

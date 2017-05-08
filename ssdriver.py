@@ -71,7 +71,7 @@ class ssdriver:
 
   def __del__(self):
     if self.driver:
-      #self.driver.quit()
+      self.driver.quit()
       pass
 
   def webdriver(self):
