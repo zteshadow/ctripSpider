@@ -22,7 +22,7 @@ class ssdb:
 
         #'hotel table'
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS find_hotel (id DATE, search_date DATE, price INT, primary key(id, search_date)) charset = utf8;")
+        cursor.execute("create table IF NOT EXISTS find_hotel (name VARCHAR(20), day DATE, search_date DATE, price INT, primary key(name, day, search_date)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")
 
         #'find_flights table'
@@ -81,12 +81,12 @@ class ssdb:
     else:
       return False;
   
-  def add_hotel(self, start, end, price):
-    data = "insert into find_hotel (id, search_date, price) values('"
-    data += str(start)
-    data += "', '"
-    data += str(end)
-    data += "', %d)" % price
+  def add_hotel(self, name, day, search_date, price):
+    data = "insert into find_hotel (name, day, search_date, price) values("
+    data += "'" + name + "'"
+    data += ", '" + str(day) + "'"
+    data += ", '" + str(search_date) + "'"
+    data += ", %d);" % price
     #print(data)
     try:
       self.cursor.execute(data)
@@ -94,8 +94,23 @@ class ssdb:
     except:
       print(data + "--> command error")
 
-  def find_hotel(self):
-    pass
+  def find_hotel(self, name, day, search_day):
+    command = "select price from find_hotel where name = '"
+    command += name + "'"
+    command += " and day = '" + str(day) + "'"
+    command += " and search_date = '" + str(search_day) + "';"
+    #print(command)
+    try:
+      self.cursor.execute(command)
+      item = self.cursor.fetchone()
+      #print(item)
+      if item:
+        return item['price']
+      else:
+        return 0
+    except:
+      print(command + "--> command error")
+      return 0
 
   def add_flight(self, from_city, to_city, day, search_day, price):
     command = "insert into find_flight (from_city, to_city, day, search_date, price) values("
@@ -125,7 +140,6 @@ class ssdb:
         return item['price']
       else:
         return 0
-
     except:
       print(command + "--> command error")
       return 0

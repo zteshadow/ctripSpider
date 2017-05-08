@@ -178,12 +178,13 @@ def ss_get_price_for_date(driver, from_date, to_date):
   print("from: " + str(from_date) + " to: " + str(to_date) + " bed: " + lowest_bed + " breakfirst: " + lowest_breakfirst + " lowest_price: %d" % lowest_price)
   return lowest_price
 
-def ss_retrieve_all_price_for_hotel(hotelurl):
+def ss_retrieve_all_price_for_hotel(name, hotelurl):
   db = ssdata()
   mydriver = ssdriver()
   driver = mydriver.webdriver()
   print(hotelurl)
   driver.get(hotelurl)
+  ssdriver.add_cookies(driver, hotelurl)
   try:
     table = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "J_RoomListTbl")))
@@ -195,21 +196,24 @@ def ss_retrieve_all_price_for_hotel(hotelurl):
   current_date = datetime.date.today()
   day_end = datetime.date(current_date.year, 12, 31)
   count = (day_end - current_date).days
-  for i in range(0, count):
+  for i in range(1, count):
     start = datetime.date.today() + datetime.timedelta(days=i)
-    end = start + datetime.timedelta(days=1)
-    #print("start: "+start.strftime('%Y-%m-%d')+" end: "+end.strftime('%Y-%m-%d'))
-    #tomorrow_string = tomorrow.strftime('%Y-%m-%d')
-    price = ss_get_price_for_date(driver, start, end)
-    db.add_hotel(start, current_date, price)
+    price = db.find_hotel(name, start, current_date)
+    if not price:
+      end = start + datetime.timedelta(days=1)
+      price = ss_get_price_for_date(driver, start, end)
+      db.add_hotel(name, start, current_date, price)
+    else:
+      print("already exist: " + name + ", " + str(start))
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 if os.path.isfile('./logger.log'):
   os.remove('./logger.log')
 logging.basicConfig(filename='logger.log', level=logging.INFO)
 
-print("start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
-url = ss_get_url_for_hotel('上海大厦')
-ss_retrieve_all_price_for_hotel(url)
+name = '上海大厦'
+print(name + ", start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
+url = ss_get_url_for_hotel(name)
+ss_retrieve_all_price_for_hotel(name, url)
 print("end: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
 
