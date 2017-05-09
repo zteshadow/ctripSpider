@@ -1,6 +1,43 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.city {
+float: left;
+margin: 5px;
+padding: 15px;
+width: 200px;
+height: 100px;
+} 
+</style>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>  
 <script src="http://code.highcharts.com/highcharts.js"></script>  
 <script src="{{ url_for('static', filename='chartkick.js') }}"></script>  
+</head>
+
+<div class="city">
+  <select data-am-selected>
+    <option value="a">亚布力酒店</option>
+    <option value="b" selected>上海大厦</option>
+    <option value="d" disabled>禁用鸟</option>
+  </select>
+</div>
+
+
+<div class="city">
+  <select data-am-selected>
+    <option value="a">马来西亚</option>
+    <option value="b" selected>西班牙</option>
+    <option value="d" disabled>禁用鸟</option>
+  </select>
+</div>
+
+<div class = "city">
+<button type="button" class="am-btn am-btn-primary btn-loading-example" data-am-loading="{spinner: 'circle-o-notch', loadingText: '加载中...', resetText: '加载过了'}">按钮</button>
+</div>
 
 {% line_chart data %} 
+
+</html>

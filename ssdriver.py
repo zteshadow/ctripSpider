@@ -14,6 +14,35 @@ from ssutil import ssutil
 
 class ssdriver:
   @staticmethod
+  def create_cookies(url):
+    cookies = None
+    domain_list = urlparse(url).hostname.split('.')
+    name = None
+    if len(domain_list) >= 3:
+      name = domain_list[1] + '.' + domain_list[2]
+    else:
+      ssutil.error(domain_list)
+
+    if name:
+      file_path = "./data/" + name + '.cookies'
+
+      if os.path.isfile(file_path):
+        os.remove(file_path)
+
+      chrome_path = ssdriver.get_chrome_driver_path()
+      driver = webdriver.Chrome(chrome_path)
+      driver.get(url)
+
+      #20秒等待输入密码
+      time.sleep(20)
+
+      cookies = driver.get_cookies()
+      #print(cookies)
+      with open(file_path, 'w', encoding = 'utf-8') as f:
+        json.dump(cookies, f, sort_keys=True)
+    return cookies
+
+  @staticmethod
   def get_cookies(url):
     cookies = None
     domain_list = urlparse(url).hostname.split('.')
@@ -25,32 +54,20 @@ class ssdriver:
 
     if name:
       file_path = "./data/" + name + '.cookies'
-      if os.path.isfile(file_path):
-        os.remove(file_path)
-
-      if not os.path.isfile(file_path):
-        chrome_path = ssdriver.get_chrome_driver_path()
-        driver = webdriver.Chrome(chrome_path)
-        driver.get(url)
-
-        #10秒钟后
-        time.sleep(20)
-
-        cookies = driver.get_cookies()
-        print(cookies)
-        with open(file_path, 'w', encoding = 'utf-8') as f:
-          json.dump(cookies, f)
-      else:
-        with open(file_path, 'r') as f:
-          cookies = json.load(f)
+      with open(file_path, 'r') as f:
+        cookies = json.load(f)
     return cookies
 
   @staticmethod
   def add_cookies(driver, url):
+    driver.delete_all_cookies()
     cookies = ssdriver.get_cookies(url)
+    index = 0
     for item in cookies:
-      print(item)
-      driver.add_cookie(item)
+      if item['hostOnly'] != True:
+        #print(("[%d]: " % index) + str(item))
+        driver.add_cookie(item)
+      index += 1
 
   @staticmethod
   def get_phantomjs_path():
@@ -74,6 +91,7 @@ class ssdriver:
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
       )
     dcap["phantomjs.page.settings.loadImages"] = False
+    #dcap["Host"] = 'hotels.ctrip.com'
     phantomjs_path = ssdriver.get_phantomjs_path()
     self.driver = webdriver.PhantomJS(executable_path = phantomjs_path, desired_capabilities = dcap)
 
