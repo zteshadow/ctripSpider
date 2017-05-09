@@ -27,7 +27,7 @@ class ssdb:
 
         #'find_flights table'
         cursor.execute("SET sql_notes = 0; ")
-        command = "create table IF NOT EXISTS find_flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, search_date DATE, price INT, primary key(from_city, to_city, day)) charset = utf8;"
+        command = "create table IF NOT EXISTS find_flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, search_date DATE, price INT, primary key(from_city, to_city, day, search_date)) charset = utf8;"
         cursor.execute(command)
         cursor.execute("SET sql_notes = 1; ")
 
@@ -161,7 +161,10 @@ class ssdb:
 
   def find_flight_all_price(self, from_city, to_city, search_day):
     all_data = {}
-    command = "select day, price from find_flight where search_date = '" + search_day.strftime('%Y-%m-%d') + "' order by day;"
+    command = "select day, price from find_flight where "
+    command += "from_city = '" + from_city + "'" 
+    command += " and to_city = '" + to_city + "'"
+    command += " and search_date = '" + search_day.strftime('%Y-%m-%d') + "' order by day;"
     self.cursor.execute(command)
     all_items = self.cursor.fetchall()
     for item in all_items:
