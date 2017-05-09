@@ -17,7 +17,7 @@ class ssutil:
   #exception will rail
   @staticmethod
   def error(msg):
-    #print(msg)
+    print(msg)
     #os._exit(1)
     sys.exit(msg)
 

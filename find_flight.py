@@ -34,9 +34,7 @@ def parse_data(table):
 
 #'上海', '三亚', 2017-05-05
 # return: 765
-def get_price(from_city, to_city, day):
-  driver_util = ssdriver()
-  driver = driver_util.webdriver()
+def get_price(driver, from_city, to_city, day):
   url = "http://flights.ctrip.com/booking/" + from_city + "-" + to_city + "-day-1.html?DDate1=";
   url += day.strftime('%Y-%m-%d')
   print(url)
@@ -54,7 +52,7 @@ def get_price(from_city, to_city, day):
     print("name: " + item[0] + " price: %d" % item[1])
     return item[1]
   else:
-    #ssutil.save_web(driver)
+    ssutil.save_web(driver)
     return None
 
 if __name__ == '__main__':
@@ -62,8 +60,11 @@ if __name__ == '__main__':
 
   from_city_name = '上海'
   to_city_name = '哈尔滨'
-  from_city = bddata.find_city(from_city_name)
-  to_city = bddata.find_city(to_city_name)
+  from_city = bddata.find_city_code(from_city_name)
+  to_city = bddata.find_city_code(to_city_name)
+
+  driver_util = ssdriver()
+  driver = driver_util.webdriver()
 
   current_date = datetime.date.today()
   day_end = datetime.date(current_date.year, 12, 31)
@@ -71,14 +72,14 @@ if __name__ == '__main__':
   for i in range(1, count): #从1开始, 是因为今天的机票一般都没有了
     day = datetime.date.today() + datetime.timedelta(days=i)
     if not bddata.find_flight(from_city_name, to_city_name, day, datetime.date.today()):
-      price = get_price(from_city, to_city, day)
+      price = get_price(driver, from_city, to_city, day)
       if price:
         bddata.add_flight(from_city_name, to_city_name, day, datetime.date.today(), price)
 
       while not price:
         print('wait 10 secs...')
         time.sleep(10)
-        price = get_price(from_city, to_city, day)
+        price = get_price(driver, from_city, to_city, day)
         if price:
           bddata.add_flight(from_city_name, to_city_name, day, datetime.date.today(), price)
     else:

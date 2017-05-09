@@ -56,9 +56,9 @@ class ssdata:
 
     return city_list
 
-  def find_city(self, name):
+  def find_city_code(self, name):
     if self.db.city_list_exist():
-      code = self.db.find_city(name)
+      code = self.db.find_city_code(name)
       return code
     else:
       city_list = self.get_city_list()

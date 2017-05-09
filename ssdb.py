@@ -49,7 +49,7 @@ class ssdb:
       self.db.close()
 
   #return code of city named 'name'
-  def find_city(self, name):
+  def find_city_code(self, name):
     code = None
     if len(name) > 0:
       command = "select code from city_list where name = '" + name + "';"
