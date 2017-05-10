@@ -46,14 +46,13 @@ class hoteldb:
     try:
       self.cursor.execute(command)
       item = self.cursor.fetchone()
-      #print(item)
       if item:
         return item['price']
       else:
-        return 0
+        return None
     except:
       print(command + "--> command error")
-      return 0
+      return None
 
   def add(self, day, price):
     name = self.name

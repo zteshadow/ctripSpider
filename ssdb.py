@@ -20,17 +20,6 @@ class ssdb:
         cursor.execute("create database IF NOT EXISTS travel")
         cursor.execute("USE travel;")
 
-        #'hotel table'
-        cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS hotel (name VARCHAR(20), day DATE, price INT, primary key(name, day)) charset = utf8;")
-        cursor.execute("SET sql_notes = 1; ")
-
-        #'find_flights table'
-        cursor.execute("SET sql_notes = 0; ")
-        command = "create table IF NOT EXISTS flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, price INT, primary key(from_city, to_city, day)) charset = utf8;"
-        cursor.execute(command)
-        cursor.execute("SET sql_notes = 1; ")
-
         #'city code table'
         cursor.execute("SET sql_notes = 0; ")
         cursor.execute("create table IF NOT EXISTS city_list (name VARCHAR(20), code VARCHAR(20), primary key(name)) charset = utf8;")
