@@ -4,14 +4,16 @@
 #selenium
 import time, datetime
 
+from hoteldb import hoteldb
 from ctriphotel import ctriphotel
 from ctriphotelengine import ctriphotelengine
 
 name = '上海大厦'
 print(name + ", start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
 
-hotel = ctriphotel(name)
-  
+data = hoteldb(name)
+hotel = ctriphotel(name, data)
+
 engine = ctriphotelengine(name)
 engine.load()
 
@@ -22,9 +24,8 @@ count = (day_end - current_date).days
 
 #从明天开始
 for i in range(1, count):
-  start = datetime.date.today() + datetime.timedelta(days=i)
-  end = start + datetime.timedelta(days = 1)
-  price = engine.get_price(start, end)
-  hotel.set_price(start, end, price)
+  day = datetime.date.today() + datetime.timedelta(days=i)
+  price = engine.get_price(day, day + datetime.timedelta(days = 1))
+  hotel.set_price(day, price)
 
 print("end: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))

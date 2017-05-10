@@ -65,20 +65,3 @@ class ssdata:
       self.db.add_city_list(city_list)
       return city_list[name]
   
-  def add_hotel(self, name, day, search_day, price):
-    self.db.add_hotel(name, day, search_day, price)
-
-  def find_hotel(self, name, day, search_day):
-    return self.db.find_hotel(name, day, search_day)
-
-  def find_hotel_all_price(self, name, search_day):
-    return self.db.find_hotel_all_price(name, search_day)
-
-  def add_flight(self, from_city, to_city, day, search_day, price):
-    self.db.add_flight(from_city, to_city, day, search_day, price)
-  
-  def find_flight(self, from_city, to_city, day):
-    return self.db.find_flight(from_city, to_city, day)
-
-  def find_flight_all_price(self, from_city, to_city, search_day):
-    return self.db.find_flight_all_price(from_city, to_city, search_day)

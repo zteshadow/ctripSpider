@@ -5,7 +5,8 @@ from flask import Flask, render_template
 import chartkick
 import pymysql
 import datetime
-from ssdata import ssdata
+from flightdb import flightdb
+from hoteldb import hoteldb
 
 app = Flask(__name__, static_folder = chartkick.js())
 app.jinja_env.add_extension("chartkick.ext.charts")
@@ -16,14 +17,14 @@ def index():
 
 @app.route("/hotel")
 def show_hotels():
-    data = ssdata()
-    hotels = data.find_hotel_all_price('上海大厦', datetime.date.today())
+    data = hoteldb('上海大厦')
+    hotels = data.all()
     return render_template('hotel.html', data = hotels)
 
 @app.route("/flight")
 def show_flights():
-    data = ssdata()
-    flights = data.find_flight_all_price('上海', '哈尔滨', datetime.date.today())
+    data = flightdb('上海', '哈尔滨')
+    flights = data.all()
     return render_template('flight.html', data = flights)
 
 @app.route("/user/<name>")

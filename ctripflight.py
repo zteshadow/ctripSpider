@@ -14,7 +14,7 @@ class ctripflight:
 
   def set_price(self, day, price):
     data = self.data
-    if data.find(day):
+    if data.find(day) != None:
       data.modify(day, price)
     else:
       data.add(day, price)
