@@ -2,13 +2,8 @@
 #-*- coding:utf-8 -*-
 
 #selenium
-import os, time, datetime, sys
+import time, datetime
 
-import pymysql, logging
-
-from ssdata import ssdata
-from ssdriver import ssdriver
-from ssutil import ssutil
 from ctriphotel import ctriphotel
 from ctriphotelengine import ctriphotelengine
 
@@ -24,6 +19,8 @@ engine.load()
 current_date = datetime.date.today()
 day_end = datetime.date(current_date.year, 12, 31)
 count = (day_end - current_date).days
+
+#从明天开始
 for i in range(1, count):
   start = datetime.date.today() + datetime.timedelta(days=i)
   end = start + datetime.timedelta(days = 1)

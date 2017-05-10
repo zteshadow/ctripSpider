@@ -11,76 +11,34 @@ from ssdata import ssdata
 from ssdriver import ssdriver
 from ssutil import ssutil
 
-#td[0-8], [0]: 航空公司, 航班和机型, [1]:出发时间和机场, [3]:到达时间和机场, [6]:价格
-#返回元组(航班, 价格)
-def parse_data(table):
-  lowest_price = sys.maxsize
-  airline = None
-  lowest_table = None
-
-  table_list = table.find_elements_by_tag_name('table')
-  for table in table_list:
-    element = table.find_element_by_class_name('base_price02')
-    price = ssutil.price(element.text)
-    if price < lowest_price:
-      lowest_price = price
-      lowest_table = table
-
-  if lowest_table:
-    element = lowest_table.find_element_by_class_name('flight_logo')
-    airline = element.text
-
-  return (airline, lowest_price)
-
-#'上海', '三亚', 2017-05-05
-# return: 765
-def get_price(driver, from_city, to_city, day):
-  url = "http://flights.ctrip.com/booking/" + from_city + "-" + to_city + "-day-1.html?DDate1=";
-  url += day.strftime('%Y-%m-%d')
-  print(url)
-  
-  driver.get(url)
-  ssdriver.add_cookies(driver, url)
-  try:
-    table = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.ID, "J_flightlist2")))
-  except:
-    ssutil.error('timeout to wait table')
-
-  item = parse_data(table)
-  if item[0]:
-    print("name: " + item[0] + " price: %d" % item[1])
-    return item[1]
-  else:
-    ssutil.save_web(driver)
-    return None
+from ctripflight import ctripflight
+from ctripflightengine import ctripflightengine
 
 if __name__ == '__main__':
   bddata = ssdata()
 
-  from_city_name = '上海'
-  to_city_name = '哈尔滨'
-  from_city = bddata.find_city_code(from_city_name)
-  to_city = bddata.find_city_code(to_city_name)
+  from_city = '上海'
+  to_city = '哈尔滨'
 
-  driver_util = ssdriver()
-  driver = driver_util.webdriver()
+  flight = ctripflight(from_city, to_city)
+  engine = ctripflightengine(from_city, to_city)
+  engine.load()
 
+  #当年年底
   current_date = datetime.date.today()
   day_end = datetime.date(current_date.year, 12, 31)
+
+  #从明天开始
   count = (day_end - current_date).days
-  for i in range(1, count): #从1开始, 是因为今天的机票一般都没有了
-    day = datetime.date.today() + datetime.timedelta(days=i)
-    if not bddata.find_flight(from_city_name, to_city_name, day, datetime.date.today()):
+  for i in range(1, count):
+    day = datetime.date.today() + datetime.timedelta(days = i)
+    price = engine.get_price(day)
+    if price:
+      flight.set_price(day, price)
+
+    while not price:
+      print('wait 10 secs...')
+      time.sleep(10)
       price = get_price(driver, from_city, to_city, day)
       if price:
-        bddata.add_flight(from_city_name, to_city_name, day, datetime.date.today(), price)
-
-      while not price:
-        print('wait 10 secs...')
-        time.sleep(10)
-        price = get_price(driver, from_city, to_city, day)
-        if price:
-          bddata.add_flight(from_city_name, to_city_name, day, datetime.date.today(), price)
-    else:
-      print("already exist")
+        flight.set_price(day, price)

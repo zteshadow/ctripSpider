@@ -8,6 +8,11 @@ class ssutil:
   def __init__(self):
     pass
 
+  @staticmethod
+  def log(msg):
+    with open('error.log', 'w') as outfile:
+      outfile.write(msg)
+
   #quit without exception
   @staticmethod
   def quit(msg):
