@@ -17,9 +17,19 @@ def index():
 
 @app.route("/hotel")
 def show_hotels():
-    data = hoteldb('上海大厦')
-    hotels = data.all()
-    return render_template('hotel.html', data = hotels)
+    hotels = hoteldb('上海大厦').all()
+    flights = flightdb('上海', '哈尔滨').all()
+    #total = flight * 3(人) + hotels * 4(晚) + flight * 3(人)
+    total = {}
+    for key in hotels:
+      hotel_price = hotels[key] * 4
+      flight_price = flights[key] * 6
+      hotels[key] = hotel_price
+      flights[key] = flight_price
+      total[key] = hotel_price + flight_price
+
+    data = [{'data':hotels, 'name':'hotel'}, {'data':total, 'name':'total(hotel + flight)'}]
+    return render_template('hotel.html', data = data)
 
 @app.route("/flight")
 def show_flights():
