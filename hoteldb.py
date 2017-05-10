@@ -17,7 +17,7 @@ class ssdb:
 
         #'ctrip' data base
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create database IF NOT EXISTS travel")
+        cursor.execute("create database IF NOT EXISTS travel;")
         cursor.execute("USE travel;")
 
         #'hotel table'

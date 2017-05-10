@@ -7,20 +7,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from ssdata import ssdata
 from ssdriver import ssdriver
 from ssutil import ssutil
 
+from flightdb import flightdb
 from ctripflight import ctripflight
 from ctripflightengine import ctripflightengine
 
 if __name__ == '__main__':
-  bddata = ssdata()
-
   from_city = '上海'
   to_city = '哈尔滨'
 
-  flight = ctripflight(from_city, to_city)
+  data = flightdb(from_city, to_city)
+  flight = ctripflight(from_city, to_city, data)
   engine = ctripflightengine(from_city, to_city)
   engine.load()
 
