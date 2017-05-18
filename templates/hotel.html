@@ -19,17 +19,18 @@ height: 100px;
 
 <div class="city">
   <select data-am-selected>
-    <option value="a">亚布力酒店</option>
-    <option value="b" selected>上海大厦</option>
-    <option value="d" disabled>禁用鸟</option>
+    {% for hotel in hotel_list %}
+      <option value="a">{{ hotel }}</option>  
+    {% endfor %}    
   </select>
 </div>
 
 
 <div class="city">
   <select data-am-selected>
-    <option value="a">马来西亚</option>
-    <option value="b" selected>西班牙</option>
+    {% for from_city, to_city in flight_list %}
+      <option value="b">{{ from_city }} - {{ to_city }}</option> 
+    {% endfor %} 
     <option value="d" disabled>禁用鸟</option>
   </select>
 </div>

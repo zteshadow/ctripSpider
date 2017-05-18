@@ -1,12 +1,13 @@
 #!/user/bin/env python3
 #-*- coding:utf8 -*-
 
-from flask import Flask, render_template
-import chartkick
-import pymysql
 import datetime
+from flask import Flask, render_template
+import chartkick, pymysql
+
 from flightdb import flightdb
 from hoteldb import hoteldb
+from ssfavorite import ssfavorite
 
 app = Flask(__name__, static_folder = chartkick.js())
 app.jinja_env.add_extension("chartkick.ext.charts")
@@ -17,6 +18,9 @@ def index():
 
 @app.route("/hotel")
 def show_hotels():
+    hotel_list = ssfavorite.hotels()
+    flight_list = ssfavorite.flights()
+
     hotels = hoteldb('上海大厦').all()
     flights = flightdb('上海', '哈尔滨').all()
     #total = flight * 3(人) + hotels * 4(晚) + flight * 3(人)
@@ -29,7 +33,7 @@ def show_hotels():
       total[key] = hotel_price + flight_price
 
     data = [{'data':hotels, 'name':'hotel'}, {'data':total, 'name':'total(hotel + flight)'}]
-    return render_template('hotel.html', data = data)
+    return render_template('hotel.html', data = data, hotel_list = hotel_list, flight_list = flight_list)
 
 @app.route("/flight")
 def show_flights():
