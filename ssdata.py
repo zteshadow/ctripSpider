@@ -19,7 +19,7 @@
 
 #第二步, 对于每一条目, 用|分隔, 然后把()去掉, 再取,分隔的第一项, 这样就不区分上海的浦东和虹桥机场了(上海<->SHA)
 
-from ssdb import ssdb
+from citydb import citydb
 from urllib.request import urlopen
 import datetime
 import json
@@ -27,7 +27,7 @@ import re
 
 class ssdata:
   def __init__(self):
-    self.db = ssdb()
+    self.db = citydb()
 
   #上海(虹桥国际机场)(SHA) -> 上海(虹桥国际机场)
   def remove_code(self, name):

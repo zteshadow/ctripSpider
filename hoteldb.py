@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
 import pymysql
+import ssutil
 
 class hoteldb:
-  def show_error(self, msg):
-    print(msg)
-    exit(1)
-
   def __init__(self, name):
     self.name = name
     self.cursor = None
@@ -26,9 +23,9 @@ class hoteldb:
         cursor.execute("create table IF NOT EXISTS hotel (name VARCHAR(20), day DATE, price INT, primary key(name, day)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")
       else:
-        show_error("cursor create error")
+        ssutil.error("cursor create error")
     else:
-      show_error("database connect error")
+      ssutil.error("database connect error")
 
   def __del__(self):
     if self.cursor:

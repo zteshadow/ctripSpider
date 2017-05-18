@@ -16,7 +16,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from ssutil import ssutil
 from ssdriver import ssdriver
 
-
 class ctriphotelengine:
   def __init__(self, name):
     self.name = name

@@ -47,5 +47,3 @@ class ssutil:
         print('--error price: ' + price)
 
     return pricenumber
-
-

@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
 import pymysql
+import ssutil
 
 class flightdb:
-  def show_error(self, msg):
-    print(msg)
-    exit(1)
-
   def __init__(self, from_city, to_city):
     self.from_city = from_city
     self.to_city = to_city
@@ -29,9 +26,9 @@ class flightdb:
         cursor.execute("SET sql_notes = 1; ")
 
       else:
-        show_error("cursor create error")
+        ssutil.error("cursor create error")
     else:
-      show_error("database connect error")
+      ssutil.error("database connect error")
 
   def __del__(self):
     if self.cursor:
