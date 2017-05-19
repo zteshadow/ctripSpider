@@ -13,7 +13,6 @@ from ctriphotelengine import ctriphotelengine
 current_date = datetime.date.today()
 day_end = datetime.date(current_date.year, 12, 31)
 count = (day_end - current_date).days
-count = 2
 
 hotel_list = ssfavorite.hotels()
 for name in hotel_list:
