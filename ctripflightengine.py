@@ -123,6 +123,7 @@ class ctripflightengine:
       print(str(day) + ", " + data[0] + ": %d" % data[1])
     else:
       ssutil.save_web(driver)
+      return 0
 
     return data[1]
     
