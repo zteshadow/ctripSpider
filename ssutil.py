@@ -44,6 +44,7 @@ class ssutil:
       try:
         pricenumber = int(price)
       except:
-        print('--error price: ' + price)
+        #print('--error price: ' + price)
+        pass
 
     return pricenumber

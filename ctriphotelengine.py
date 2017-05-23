@@ -16,17 +16,17 @@ from ssdriver import ssdriver
 from ctriphotel import ctriphotel
 
 class ctriphotelengine:
-  def __init__(self, name):
-    self.name = name
+  def __init__(self, url):
+    self.url = url
     self.driver = ssdriver()
 
   def __del__(self):
     pass
 
   def load(self):
-    hotelurl = ctriphotel.info(self.name)['url']
+    hotelurl = self.url
     driver = self.driver.webdriver()
-    print(hotelurl)
+    #print(hotelurl)
     driver.get(hotelurl)
     ssdriver.add_cookies(driver, hotelurl)
     try:

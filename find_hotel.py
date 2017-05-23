@@ -16,9 +16,13 @@ count = (day_end - current_date).days
 
 hotel_list = ssfavorite.hotels()
 for name in hotel_list:
+  info = ctriphotel.info(name)
+  if not info:
+    break
+
   print(name + ", start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
   hotel = ctriphotel(name, hoteldb(name))
-  engine = ctriphotelengine(name)
+  engine = ctriphotelengine(info['url'])
   engine.load()
 
   #从明天开始

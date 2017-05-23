@@ -21,7 +21,7 @@ class ctripflightengine:
     from_code = bddata.find_city_code(from_city)
     to_code = bddata.find_city_code(to_city)
     self.url = "http://flights.ctrip.com/booking/" + from_code + "-" + to_code + "-day-1.html";
-
+    print(from_city + '-' + to_city + ', ' + self.url)
     self.bddata = bddata
     self.driver = ssdriver()
 
@@ -31,7 +31,6 @@ class ctripflightengine:
   def load(self):
     flighturl = self.url
     driver = self.driver.webdriver()
-    print(flighturl)
     driver.get(flighturl)
     ssdriver.add_cookies(driver, flighturl)
 
