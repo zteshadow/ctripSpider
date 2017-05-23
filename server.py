@@ -2,8 +2,10 @@
 #-*- coding:utf8 -*-
 
 import datetime
-from flask import Flask, render_template
 import chartkick, pymysql
+
+from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
 
 from flightdb import flightdb
 from hoteldb import hoteldb
@@ -11,6 +13,7 @@ from ssfavorite import ssfavorite
 
 app = Flask(__name__, static_folder = chartkick.js())
 app.jinja_env.add_extension("chartkick.ext.charts")
+bootstrap = Bootstrap(app)
 
 @app.route("/")
 def index():
@@ -44,6 +47,10 @@ def show_flights():
 @app.route("/user/<name>")
 def user(name):
     return render_template('user.html', name=name)
+
+@app.route("/base")
+def base():
+    return render_template('base.html')
 
 if (__name__ == '__main__'):
     app.run(debug=True,port=8764)
