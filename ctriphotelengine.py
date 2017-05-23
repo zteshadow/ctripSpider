@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-from urllib.request import urlopen
-from urllib.parse import quote
-import json, sys, datetime
+import sys, datetime
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -15,6 +13,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 #自定义package
 from ssutil import ssutil
 from ssdriver import ssdriver
+from ctriphotel import ctriphotel
 
 class ctriphotelengine:
   def __init__(self, name):
@@ -24,41 +23,8 @@ class ctriphotelengine:
   def __del__(self):
     pass
 
-  def url(self):
-    #keyword = '上海大厦';
-    #keyword = urllib.parse.quote(keyword)
-    keyword = quote(self.name)
-    url = "http://m.ctrip.com/restapi/h5api/searchapp/search?action=autocomplete&source=globalonline&keyword=%s" % keyword
-    content = urlopen(url).read()
-    if content == None:
-      ssutil.error('content not found')
-
-    jsonData = json.loads(content.decode("utf-8"))
-    #print(s)
-    hotelList = None;
-    try:
-      hotelList = jsonData['data']
-      #print(jsonData['data'])
-    except:
-      ssutil.error("--------json struction is changed-----")
-
-    hotelURL = None;
-    for hotel in hotelList:
-      try:
-        name = hotel['word']
-        if (name == self.name):
-          #print(hotel)
-          try:
-            hotelURL = hotel['url']
-          except:
-            ssutil.error("--------json struction is changed-----")
-      except:
-        ssutil.error("--------json struction is changed-----")
-
-    return hotelURL
-
   def load(self):
-    hotelurl = self.url()
+    hotelurl = ctriphotel.info(self.name)['url']
     driver = self.driver.webdriver()
     print(hotelurl)
     driver.get(hotelurl)

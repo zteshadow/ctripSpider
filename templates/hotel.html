@@ -19,17 +19,11 @@
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">酒店
         <span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="#">上海大厦</a></li>
-          <li><a href="#">上海和平饭店</a></li>
+          {% for hotel in hotel_list %}
+          <li><a href="?name={{ hotel }}">{{ hotel }}</a></li>
+          {% endfor %}
         </ul>
       </li>
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">机票
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">上海-哈尔滨</a></li>
-        </ul>
-      </li>      
     </ul>
   </div>
 </nav>
