@@ -87,21 +87,17 @@ class flightdb:
       print(command + "--> command error")
 
   def all(self):
-    from_city = self.from_city
-    to_city = self.to_city    
     all_data = {}
-    command = "select day, price from flight where "
-    command += "from_city = '" + from_city + "'" 
-    command += " and to_city = '" + to_city + "' order by day;"
-    self.cursor.execute(command)
-    all_items = self.cursor.fetchall()
-    for item in all_items:
-      all_data[str(item["day"])] = item["price"]
-      #item_string = "'" + str(item["id"]) + "':" + str(item["price"])
-      #print(item_string)
-      #print(item["id"])
-      #print(item["price"])
-      #all_data.append(item_string)
+    from_city = self.from_city
+    to_city = self.to_city
+    if from_city and to_city:
+      command = "select day, price from flight where "
+      command += "from_city = '" + from_city + "'" 
+      command += " and to_city = '" + to_city + "' order by day;"
+      self.cursor.execute(command)
+      all_items = self.cursor.fetchall()
+      for item in all_items:
+        all_data[str(item["day"])] = item["price"]
 
     return all_data
 

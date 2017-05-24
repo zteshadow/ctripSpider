@@ -85,15 +85,20 @@ class ctriphotelengine:
         print(flag_row.get_attribute('outerHTML'))
         ssutil.error('timeout to refresh table')
 
-    WebDriverWait(driver, 10).until(
-      EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
-    )
+    try:
+      WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.ID, 'J_RoomListTbl'))
+      )
+    except:
+      ssutil.save_web(driver)
+      ssutil.error('timeout to wait J_RoomListTbl');
   
     table = driver.find_element_by_id('J_RoomListTbl')
     row_list = table.find_elements_by_tag_name('tr')
     count = len(row_list)
     if count > 0:
-      print("get row ok: %d" % count)
+      #print("get row ok: %d" % count)
+      pass
     else:
       ssutil.error("no row")
 
