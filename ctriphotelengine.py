@@ -16,8 +16,8 @@ from ssdriver import ssdriver
 from ctriphotel import ctriphotel
 
 lowest_price = sys.maxsize
-lowest_bed = 'no'
-lowest_breakfirst = 'no'
+lowest_bed = None
+lowest_breakfirst = None
 
 lock = threading.Lock()
 
@@ -94,16 +94,19 @@ class ctriphotelengine:
     if count > 2:
       return row_list[1] #取第二条作为table更新的标志行
     else:
-      ssutil.error("no flag row")
+      #ssutil.error("no flag row")
+      return None
 
   def get_price(self, from_date, to_date):
     driver = self.driver.webdriver()
     global lowest_price, lowest_bed, lowest_breakfirst
     lowest_price = sys.maxsize
-    lowest_bed = 'no'
-    lowest_breakfirst = 'no'
+    lowest_bed = None
+    lowest_breakfirst = None
 
     flag_row = self.get_flag_row()
+    if not flag_row:
+      return 0
 
     from_string = from_date.strftime('%Y-%m-%d')
     to_string = to_date.strftime('%Y-%m-%d')
@@ -168,6 +171,11 @@ class ctriphotelengine:
       thread.join()
 
     #print('end loop ' + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
-    print("from: " + str(from_date) + " to: " + str(to_date) + " bed: " + lowest_bed + " breakfirst: " + lowest_breakfirst + " lowest_price: %d" % lowest_price)
-    return lowest_price
+    if lowest_bed and lowest_breakfirst:
+      print("from: " + str(from_date) + " to: " + str(to_date) + " bed: " + lowest_bed + " breakfirst: " + lowest_breakfirst + " lowest_price: %d" % lowest_price)
+      return lowest_price
+    else:
+      print(str(from_date) + ' no available room')
+      return 0
+
     

@@ -54,7 +54,8 @@ for name in hotel_list:
     day = datetime.date.today() + datetime.timedelta(days=i)
     if not hotel.find_price(day):
       price = hotel_engine.get_price(day, day + datetime.timedelta(days = 1))
-      hotel.set_price(day, price)
+      if price > 0:
+        hotel.set_price(day, price)
 
     if go_flight:
       if not go_flight.find_price(day):

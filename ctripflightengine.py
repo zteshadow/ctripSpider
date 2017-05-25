@@ -106,14 +106,22 @@ class ctripflightengine:
         return 0
       #print("html refresh ok")
 
-      table = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.ID, 'J_flightlist2'))
-      )
+      try:
+        table = WebDriverWait(driver, 20).until(
+          EC.presence_of_element_located((By.ID, 'J_flightlist2'))
+        )
+      except:
+        ssutil.error('timeout to wait J_flightlist2')
+        return 0
       
       #等待都加载完
-      WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.ID, 'flight_pagefooter'))
-        )
+      try:
+        WebDriverWait(driver, 20).until(
+          EC.presence_of_element_located((By.ID, 'flight_pagefooter'))
+          )
+      except:
+        ssutil.error("timeout to wait flight_pagefooter")
+        return 0
   
     data = self.get_lowest_price(table)
     if data[0]:

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
+#该模块负责抓取城市缩写代码
+#如果城市代码
+
 import pymysql
 import ssutil
 
 class citydb:
+  #初始化创建数据库连接, 创建数据库, 数据表
   def __init__(self):
     self.cursor = None
     self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456', charset='utf8')
@@ -27,6 +31,7 @@ class citydb:
     else:
       ssutil.error("database connect error")
 
+  #析构注意关闭cursor和connection
   def __del__(self):
     if self.cursor:
       self.cursor.close()
@@ -35,6 +40,7 @@ class citydb:
       self.db.close()
 
   #return code of city named 'name'
+  #上海->SHA, 北京->BJS
   def find_city_code(self, name):
     code = None
     if len(name) > 0:
@@ -46,6 +52,7 @@ class citydb:
     return code
 
   #{name, code}
+  #将ctrip返回的城市代码数据存入数据库
   def add_city_list(self, map):
     for name in map:
       code = map[name]
@@ -58,6 +65,7 @@ class citydb:
       self.cursor.execute(data)
       self.db.commit()
 
+  #城市代码数据库是否存在
   def city_list_exist(self):
     command = "select * from city_list;"
     self.cursor.execute(command)

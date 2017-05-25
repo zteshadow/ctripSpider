@@ -26,8 +26,7 @@ class ssutil:
   @staticmethod
   def error(msg):
     print(msg)
-    #os._exit(1)
-    sys.exit(msg)
+    #sys.exit(msg)
 
   @staticmethod
   def save_web(driver):
