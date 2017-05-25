@@ -26,12 +26,14 @@ def show_hotels():
   if name == None :
     name = ""
 
-  print(name)
   hotel_list = ssfavorite.hotels()
   data = sschartdata.travel_price(name)
-  print(data)
-  
-  return render_template('hotel.html', data = data, hotel_list = hotel_list)
+  if len(data) > 1:
+    type = 1
+  else:
+    type = 0
+
+  return render_template('hotel.html', data = data, hotel_list = hotel_list, type = type)
 
 @app.route("/flight")
 def show_flights():

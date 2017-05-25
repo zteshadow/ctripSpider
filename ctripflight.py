@@ -9,9 +9,6 @@ class ctripflight:
     self.to_city = to_city
     self.data = data
 
-  def __del__(self):
-    pass
-
   def set_price(self, day, price):
     data = self.data
     if data.find(day) != None:

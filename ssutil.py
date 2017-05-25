@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 #-*- coding=utf8 -*-
 
-import sys, os
+import sys, os, time
 from selenium import webdriver
 
 class ssutil:
   def __init__(self):
     pass
+  @staticmethod
+  def time():
+    return str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 
   @staticmethod
   def log(msg):

@@ -56,7 +56,7 @@ class sschartdata:
           flight_price = go_price * 3 + back_price * 3
           hotels[key] = hotel_price
           total[key] = hotel_price + flight_price
-      return [{'data':hotels, 'name':name}, {'data':total, 'name':'机票+酒店'}]      
+      return [{'data':total, 'name':'机票+酒店'}, {'data':hotels, 'name':name}]      
     else:
       for key in hotel_price_list:
         hotels[key] = hotel_price_list[key] * 4

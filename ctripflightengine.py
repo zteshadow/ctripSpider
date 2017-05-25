@@ -25,9 +25,6 @@ class ctripflightengine:
     self.bddata = bddata
     self.driver = ssdriver()
 
-  def __del__(self):
-    pass
-
   def load(self):
     flighturl = self.url
     driver = self.driver.webdriver()

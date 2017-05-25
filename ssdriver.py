@@ -91,14 +91,18 @@ class ssdriver:
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 "
       )
     dcap["phantomjs.page.settings.loadImages"] = False
-    #dcap["Host"] = 'hotels.ctrip.com'
     phantomjs_path = ssdriver.get_phantomjs_path()
-    self.driver = webdriver.PhantomJS(executable_path = phantomjs_path, desired_capabilities = dcap)
+
+    service_args=[]
+    service_args.append('--load-images=no')  ##关闭图片加载
+    service_args.append('--disk-cache=yes')  ##开启缓存
+    service_args.append('--ignore-ssl-errors=true') ##忽略https错误
+
+    self.driver = webdriver.PhantomJS(executable_path = phantomjs_path, desired_capabilities = dcap, service_args = service_args)
 
   def __del__(self):
     if self.driver:
       self.driver.quit()
-      pass
 
   def webdriver(self):
     return self.driver
