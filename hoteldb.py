@@ -4,10 +4,10 @@ import pymysql
 import ssutil
 
 class hoteldb:
-  def __init__(self, name):
+  def __init__(self, name, db):
     self.name = name
     self.cursor = None
-    self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456', charset='utf8')
+    self.db = db
     if self.db:
       cursor = self.db.cursor(pymysql.cursors.DictCursor)
       if cursor:
@@ -30,9 +30,6 @@ class hoteldb:
   def __del__(self):
     if self.cursor:
       self.cursor.close()
-
-    if self.db:
-      self.db.close()
   
   def find(self, day):
     name = self.name

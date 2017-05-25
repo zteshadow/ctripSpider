@@ -12,6 +12,9 @@ class ctriphotel:
     self.name = name
     self.data = data
 
+  def find_price(self, day):
+    return self.data.find(day)
+
   def set_price(self, day, price):
     data = self.data
     if data:

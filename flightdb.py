@@ -4,11 +4,11 @@ import pymysql
 import ssutil
 
 class flightdb:
-  def __init__(self, from_city, to_city):
+  def __init__(self, from_city, to_city, db):
     self.from_city = from_city
     self.to_city = to_city
     self.cursor = None
-    self.db = pymysql.connect(host='127.0.0.1', user='root', passwd='Qwertyui123456', charset='utf8')
+    self.db = db
     if self.db:
       cursor = self.db.cursor(pymysql.cursors.DictCursor)
       if cursor:
@@ -34,9 +34,6 @@ class flightdb:
     if self.cursor:
       self.cursor.close()
 
-    if self.db:
-      self.db.close()
-
   def find(self, day):
     from_city = self.from_city
     to_city = self.to_city
@@ -52,7 +49,8 @@ class flightdb:
         return item['price']
       else:
         return None
-    except:
+    except Exception as e:
+      print(e)
       print(command + "--> command error")
       return None
 
