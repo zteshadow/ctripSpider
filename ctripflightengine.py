@@ -103,6 +103,7 @@ class ctripflightengine:
       except:
         print(refresh_flag.get_attribute('outerHTML'))
         ssutil.error('timeout to refresh page')
+        return 0
       #print("html refresh ok")
 
       table = WebDriverWait(driver, 20).until(
