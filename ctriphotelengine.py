@@ -15,16 +15,13 @@ from ssutil import ssutil
 from ssdriver import ssdriver
 from ctriphotel import ctriphotel
 
-lowest_price = sys.maxsize
-lowest_bed = None
-lowest_breakfirst = None
-
 lock = threading.Lock()
 
-def thread_process(start, stop, row_list):
-  global lowest_price, lowest_bed, lowest_breakfirst
+def thread_process(start, stop, row_list, price_list):
   #print(range(start, stop))
   #print(threading.current_thread().name)
+  lowest_price = sys.maxsize
+
   for i in range(start, stop):
     row = row_list[i]
     #print('start find bed ' + ssutil.time())
@@ -59,14 +56,13 @@ def thread_process(start, stop, row_list):
     if bed.find('双') != -1 and breakfirst.find('双') != -1:
       real_price = ssutil.price(price)
       if real_price > 0:
-        lock.acquire()
-        try:
-          if real_price < lowest_price:
-            lowest_price = real_price
-            lowest_bed = bed
-            lowest_breakfirst = breakfirst
-        finally:
-          lock.release()
+        if real_price < lowest_price:
+          lowest_price = real_price
+
+  #for循环结束, 查看是否有min最小值, 否则插入0
+  lock.acquire()
+  price_list.append(lowest_price)
+  lock.release()
 
 class ctriphotelengine:
   def __init__(self, url):
@@ -97,13 +93,9 @@ class ctriphotelengine:
       #ssutil.error("no flag row")
       return None
 
+  #返回日期对应的符合要求(双床, 双早)的最低价格, 否则返回0
   def get_price(self, from_date, to_date):
     driver = self.driver.webdriver()
-    global lowest_price, lowest_bed, lowest_breakfirst
-    lowest_price = sys.maxsize
-    lowest_bed = None
-    lowest_breakfirst = None
-
     flag_row = self.get_flag_row()
     if not flag_row:
       return 0
@@ -159,9 +151,10 @@ class ctriphotelengine:
     start = 0
     end = count
     thread_list = []
+    price_list = []
     while start < end:
       step = min(5, end - start)
-      thread_list.append(threading.Thread(target = thread_process, args = (start, start + step, row_list, )))
+      thread_list.append(threading.Thread(target = thread_process, args = (start, start + step, row_list, price_list, )))
       start += step
 
     for thread in thread_list:
@@ -170,12 +163,16 @@ class ctriphotelengine:
     for thread in thread_list:
       thread.join()
 
-    #print('end loop ' + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
-    if lowest_bed and lowest_breakfirst:
-      print("from: " + str(from_date) + " to: " + str(to_date) + " bed: " + lowest_bed + " breakfirst: " + lowest_breakfirst + " lowest_price: %d" % lowest_price)
+    exist = False
+    lowest_price = sys.maxsize
+    for price in price_list:
+      if price < lowest_price:
+        exist = True
+        lowest_price = price
+
+    if exist:
+      print(str(from_date) + ': %d' % lowest_price)
       return lowest_price
     else:
       print(str(from_date) + ' no available room')
       return 0
-
-    
