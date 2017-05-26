@@ -12,6 +12,7 @@ class ctriphotel:
     self.name = name
     self.data = data
 
+  #返回价格, 0为没有数据
   def find_price(self, day):
     return self.data.find(day)
 

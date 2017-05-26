@@ -52,18 +52,23 @@ for name in hotel_list:
   #从明天开始
   for i in range(1, count):
     day = datetime.date.today() + datetime.timedelta(days=i)
-    if not hotel.find_price(day):
+    price = hotel.find_price(day)
+
+    #没有收录价格, 查找
+    if price == 0:
       price = hotel_engine.get_price(day, day + datetime.timedelta(days = 1))
       if price > 0:
         hotel.set_price(day, price)
 
-    if go_flight:
+    #有房价才查飞机
+    if price > 0 and go_flight:
       if not go_flight.find_price(day):
         price = go_engine.get_price(day)
         if price:
           go_flight.set_price(day, price)
-
-    if back_flight:
+    
+    #有房价才查飞机
+    if price > 0 and back_flight:
       if not back_flight.find_price(day):
         price = back_engine.get_price(day)
         if price:

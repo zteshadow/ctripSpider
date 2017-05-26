@@ -31,6 +31,7 @@ class hoteldb:
     if self.cursor:
       self.cursor.close()
   
+  #返回价格, 0为没有数据
   def find(self, day):
     name = self.name
     command = "select price from hotel where name = '"
@@ -43,10 +44,10 @@ class hoteldb:
       if item:
         return item['price']
       else:
-        return None
+        return 0
     except:
       print(command + "--> command error")
-      return None
+      return 0
 
   def add(self, day, price):
     name = self.name
