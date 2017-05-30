@@ -30,11 +30,11 @@ class sschartdata:
       price_list_back = flightdb(city, home, connection.db()).all()
     return [{'data' : price_list_go, 'name' : home + '->' + city}, {'data' : price_list_back, 'name' : city + '->' + home}]
 
-  #3人去程机票
+  #去程机票
   #4晚住宿
-  #3人回程机票
+  #回程机票
   @staticmethod
-  def travel_price(name):
+  def travel_price(name, peoples):
     connection = ssdb()
     city = ctriphotel.info(name).get('city')
     home = ssfavorite.home()
@@ -47,7 +47,7 @@ class sschartdata:
       price_list_back = flightdb(city, home, connection.db()).all()
 
     hotel_price_list = hoteldb(name, connection.db()).all()
-    #total = flight * 3(人) + hotels * 4(晚) + flight * 3(人)
+    #total = flight * (人) + hotels * 4(晚) + flight * (人)
     total = {}
     hotels = {}
 
@@ -57,7 +57,7 @@ class sschartdata:
         go_price = price_list_go.get(key)
         back_price = price_list_back.get(key)
         if go_price and back_price:
-          flight_price = go_price * 3 + back_price * 3
+          flight_price = go_price * peoples + back_price * peoples
           hotels[key] = hotel_price
           total[key] = hotel_price + flight_price
       return [{'data':total, 'name':'机票+酒店'}, {'data':hotels, 'name':name}]      

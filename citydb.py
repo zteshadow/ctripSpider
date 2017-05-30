@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-#该模块负责抓取城市缩写代码
-#如果城市代码
+#该模块负责从数据库中存取城市缩写代码
+#这个缩写代码是用来查询航班用的
 
 import pymysql
 import ssutil
@@ -47,7 +47,8 @@ class citydb:
       command = "select code from city_list where name = '" + name + "';"
       self.cursor.execute(command)
       item = self.cursor.fetchone()
-      code = item['code']
+      if item:
+        code = item.get('code')
 
     return code
 

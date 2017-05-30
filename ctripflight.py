@@ -4,6 +4,7 @@
 from flightdb import flightdb
 
 class ctripflight:
+  #起始地点, 到达地点, flightdb(数据库)
   def __init__(self, from_city, to_city, data):
     self.from_city = from_city
     self.to_city = to_city

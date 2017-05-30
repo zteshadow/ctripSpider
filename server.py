@@ -20,14 +20,22 @@ bootstrap = Bootstrap(app)
 def index():
     return render_template('index.html')
 
+#type标识有没有机票
 @app.route("/hotel")
 def show_hotels():
   name = request.values.get("name")
   if name == None :
     name = ""
 
-  hotel_list = ssfavorite.hotels()
-  data = sschartdata.travel_price(name)
+  hotel_list = []
+  travel_peoples = 0
+  travel_list = ssfavorite.travels()
+  for hotel_name, city, peoples in travel_list:
+    if name == hotel_name:
+      travel_peoples = peoples
+    hotel_list.append(hotel_name)
+
+  data = sschartdata.travel_price(name, travel_peoples)
   if len(data) > 1:
     type = 1
   else:

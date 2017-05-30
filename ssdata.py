@@ -21,9 +21,7 @@
 
 from citydb import citydb
 from urllib.request import urlopen
-import datetime
-import json
-import re
+import datetime, re
 
 class ssdata:
   def __init__(self):
