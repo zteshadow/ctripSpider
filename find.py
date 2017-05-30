@@ -20,15 +20,14 @@ count = (day_end - current_date).days
 
 connectioin = ssdb()
 database = connectioin.db()
-hotel_list = ssfavorite.hotels()
+hotel_list = ssfavorite.travels()
 home = ssfavorite.home()
 
-for name in hotel_list:
+for name, city, peoples in hotel_list:
   info = ctriphotel.info(name)
   if not info:
     break
 
-  city = info['city']
   url = info['url']
   print(name + ':\n' + city + ', ' + url)
   #print("start: " + str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
