@@ -20,7 +20,7 @@ class hoteldb:
 
         #'hotel table'
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS hotel (name VARCHAR(20), day DATE, price INT, primary key(name, day)) charset = utf8;")
+        cursor.execute("create table IF NOT EXISTS hotel (name VARCHAR(50), day DATE, price INT, primary key(name, day)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")
       else:
         ssutil.error("cursor create error")

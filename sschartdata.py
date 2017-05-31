@@ -34,9 +34,8 @@ class sschartdata:
   #4晚住宿
   #回程机票
   @staticmethod
-  def travel_price(name, peoples):
+  def travel_price(name, city, peoples):
     connection = ssdb()
-    city = ctriphotel.info(name).get('city')
     home = ssfavorite.home()
 
     price_list_go = {}

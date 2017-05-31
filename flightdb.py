@@ -21,7 +21,7 @@ class flightdb:
 
         #'find_flights table'
         cursor.execute("SET sql_notes = 0; ")
-        command = "create table IF NOT EXISTS flight (from_city VARCHAR(20), to_city VARCHAR(20), day DATE, price INT, primary key(from_city, to_city, day)) charset = utf8;"
+        command = "create table IF NOT EXISTS flight (from_city VARCHAR(50), to_city VARCHAR(50), day DATE, price INT, primary key(from_city, to_city, day)) charset = utf8;"
         cursor.execute(command)
         cursor.execute("SET sql_notes = 1; ")
 

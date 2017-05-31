@@ -29,13 +29,15 @@ def show_hotels():
 
   hotel_list = []
   travel_peoples = 0
+  city = None
   travel_list = ssfavorite.travels()
   for hotel_name, city, peoples in travel_list:
     if name == hotel_name:
       travel_peoples = peoples
+      city = city
     hotel_list.append(hotel_name)
 
-  data = sschartdata.travel_price(name, travel_peoples)
+  data = sschartdata.travel_price(name, city, travel_peoples)
   if len(data) > 1:
     type = 1
   else:

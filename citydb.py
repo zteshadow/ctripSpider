@@ -23,7 +23,7 @@ class citydb:
 
         #'city code table'
         cursor.execute("SET sql_notes = 0; ")
-        cursor.execute("create table IF NOT EXISTS city_list (name VARCHAR(20), code VARCHAR(20), primary key(name)) charset = utf8;")
+        cursor.execute("create table IF NOT EXISTS city_list (name VARCHAR(50), code VARCHAR(50), primary key(name)) charset = utf8;")
         cursor.execute("SET sql_notes = 1; ")        
 
       else:

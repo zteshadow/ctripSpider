@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+#提供一个共用的mysql
 import pymysql
 
 class dbconnection:
