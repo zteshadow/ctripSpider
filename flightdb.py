@@ -48,11 +48,11 @@ class flightdb:
       if item:
         return item['price']
       else:
-        return None
+        return 0
     except Exception as e:
       print(e)
       print(command + "--> command error")
-      return None
+      return 0
 
   def add(self, day, price):
     from_city = self.from_city
