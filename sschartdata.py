@@ -33,10 +33,15 @@ class sschartdata:
   #去程机票
   #4晚住宿
   #回程机票
+  #返回(最低价, 日期, list)
   @staticmethod
   def travel_price(name, city, peoples):
     connection = ssdb()
     home = ssfavorite.home()
+
+    #最低价格和日期
+    lowest = 0
+    day = ''
 
     price_list_go = {}
     price_list_back = {}
@@ -58,11 +63,30 @@ class sschartdata:
         if go_price and back_price:
           flight_price = go_price * peoples + back_price * peoples
           hotels[key] = hotel_price
-          total[key] = hotel_price + flight_price
-      return [{'data':total, 'name':'机票+酒店'}, {'data':hotels, 'name':name}]      
+          total_price = hotel_price + flight_price
+          total[key] = total_price
+          if lowest == 0:
+            lowest = total_price
+            day = key
+          elif total_price < lowest:
+            lowest = total_price
+            day = key
+
+      return (lowest, day, [{'data':total, 'name':'机票+酒店'}, {'data':hotels, 'name':name}])
     else:
       for key in hotel_price_list:
-        hotels[key] = hotel_price_list[key] * 4
-      return [{'data' : hotels, 'name' : name + '(only)'}]
+        total_price = hotel_price_list[key] * 4
+        hotels[key] = total_price
+        if lowest == 0:
+          lowest = total_price
+          day = key
+        elif total_price < lowest:
+          lowest = total_price
+          day = key
+
+      return (lowest, day, [{'data' : hotels, 'name' : name + '(only)'}])
+
+
+
 
     

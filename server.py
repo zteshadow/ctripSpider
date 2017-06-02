@@ -37,13 +37,13 @@ def show_hotels():
       city = city
     hotel_list.append(hotel_name)
 
-  data = sschartdata.travel_price(name, city, travel_peoples)
+  (low, day, data) = sschartdata.travel_price(name, city, travel_peoples)
   if len(data) > 1:
     type = 1
   else:
     type = 0
 
-  return render_template('hotel.html', data = data, hotel_list = hotel_list, type = type)
+  return render_template('hotel.html', data = data, hotel_list = hotel_list, type = type, label = '最低价: '+ str(low) + '(' + str(day) + ')')
 
 @app.route("/flight")
 def show_flights():
