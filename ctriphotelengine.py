@@ -53,7 +53,8 @@ def thread_process(start, stop, row_list, price_list):
     price = price.text
 
     #条件是: 双床, 双早, 找最低价格
-    if bed.find('双') != -1 and breakfirst.find('双') != -1:
+    #if bed.find('双') != -1 and breakfirst.find('双') != -1:
+    if bed.find('双') != -1:
       real_price = ssutil.price(price)
       if real_price > 0:
         if real_price < lowest_price:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
+#对数据库flightdb的浅层封装
 from flightdb import flightdb
 
 class ctripflight:
