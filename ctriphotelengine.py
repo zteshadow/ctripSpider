@@ -139,6 +139,7 @@ class ctriphotelengine:
     except:
       ssutil.save_web(driver)
       ssutil.error('timeout to wait J_RoomListTbl');
+      return 0
   
     table = driver.find_element_by_id('J_RoomListTbl')
     row_list = table.find_elements_by_tag_name('tr')
